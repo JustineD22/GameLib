@@ -3,4 +3,16 @@ require_once './includes/nav.php';
 ?>
 
 <h1> GameLib </h1>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio vero dicta nemo. Ad, rem adipisci quod placeat blanditiis, neque laudantium maiores nostrum repellendus sed, iure culpa unde voluptas eligendi ipsum.</p>
+<?php 
+
+$files = glob('./includes/*.inc.php');
+$page = $_GET['page'] ?? 'home';
+
+$pageTest = './includes/' . $page .'.inc.php';
+
+if (!in_array($pageTest, $files)) {
+    require_once './includes/home.inc.php';
+}
+else {
+    require_once $pageTest;
+}
