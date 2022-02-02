@@ -3,8 +3,8 @@ if (isset($_POST['frm'])) {
     $nom = htmlentities(trim($_POST['nom'])) ?? '';
     $prenom = htmlentities(trim($_POST['prenom'])) ?? '';
     $email = htmlentities(trim($_POST['email'])) ?? '';
-    $password = htmlentities(trim($_POST['mdp'])) ?? '';
-    $passwordverif = htmlentities(trim($_POST['mdp2'])) ?? '';
+    $mdp = htmlentities(trim($_POST['mdp'])) ?? '';
+    $mdp2 = htmlentities(trim($_POST['mdp2'])) ?? '';
 
     $erreur = array();
 
@@ -23,13 +23,13 @@ if (isset($_POST['frm'])) {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL))
         array_push($erreur, "Veuillez saisir un e-mail valide");
 
-    if (strlen($password) === 0)
+    if (strlen($mdp) === 0)
         array_push($erreur, "Veuillez saisir un mot de passe");
 
-    if (strlen($passwordverif) === 0)
+    if (strlen($mdp2) === 0)
         array_push($erreur, "Veuillez saisir la vérification de votre mot de passe");
 
-    if ($password !== $passwordverif)
+    if ($mdp !== $mdp2)
         array_push($erreur, "Vos mots de passe ne correspondent pas");
 
     if (count($erreur) === 0) {
@@ -40,22 +40,22 @@ if (isset($_POST['frm'])) {
 
         try{
             $conn = new PDO("mysql:host=$serverName;dbname=$database", $userName, $userPassword);
-            echo "Connexion OK";
+            echo "Connexion OK"; 
+            
+            $conn->beginTransaction();
+            $mdp = password_hash($mdp, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO utilisateurs(id_utilisateur, nom, prenom, mail, mdp)
+            VALUES (NULL, '$nom', '$prenom', '$email', '$mdp') ";
+            $conn->exec($sql);
+            $conn->commit();
+            echo "<p>Inserstion effectués </p>";
+
         }
+
         catch(PDOException $e){
+            $conn->rollBack();
             die("Erreur :  " . $e->getMessage());
         }
-
-        $sql = "INSERT INTO utilisateurs(id_utilisateur, nom, prenom, mail, mdp)
-        VALUES (NULL, 'DURAND', 'Michel', 'michel@durand.com', '1234')";
-
-        $conn->exec($sql);
-
-
-        $conn = null;
-
-
-
 
     } else {
         $messageErreur = "<ul>";
