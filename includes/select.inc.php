@@ -13,10 +13,10 @@ try{
     $requete->execute();
     $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-    dump($resultat);
 
 }
 
 catch(PDOException $e){
     die("Erreur :  " . $e->getMessage());
 }
+
