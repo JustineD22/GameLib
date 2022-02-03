@@ -40,20 +40,35 @@ if (isset($_POST['frm'])) {
 
         try{
             $conn = new PDO("mysql:host=$serverName;dbname=$database", $userName, $userPassword);
-            echo "Connexion OK"; 
-            
-            $conn->beginTransaction();
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $mdp = password_hash($mdp, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO utilisateurs(id_utilisateur, nom, prenom, mail, mdp)
-            VALUES (NULL, '$nom', '$prenom', '$email', '$mdp') ";
-            $conn->exec($sql);
-            $conn->commit();
+
+            $query  = $conn->prepare("
+            INSERT INTO utilisateurs(id_utilisateur, nom, prenom, mail, mdp)
+            VALUES (:id, :nom, :prenom, :mail, :mdp)");
+
+
+            $id = null;
+            $query->bindParam(':id', $id);
+            $query->bindParam(':prenom', $prenom, PDO::PARAM_STR);
+            $query->bindParam(':nom', $nom);
+            $query->bindParam(':mail', $email);
+            $query->bindParam(':mdp', $mdp);
+            $query->execute();
+            
+            $update = $conn->prepare("
+            UPDATE utilisateurs
+            SET mail='toto@toto.com'
+            WHERE id_utilisateur=6");
+
+            echo $update->rowCount();
+            $update->execute();
+
             echo "<p>Inserstion effectués </p>";
 
         }
 
         catch(PDOException $e){
-            $conn->rollBack();
             die("Erreur :  " . $e->getMessage());
         }
 
