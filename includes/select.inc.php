@@ -27,6 +27,9 @@ try{
         foreach($resultat[$i] as $key=>$value) {
             if($key != "mdp") {
                 $html .= "<td>";
+                if($key == "dateinscription") {
+                    $date = date_create($value);
+                    $html .= $date->format('d/m/Y H:i:s');
                 } 
                 else {
                     $html .= $value;

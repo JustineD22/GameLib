@@ -1,20 +1,20 @@
 <form action="index.php?page=formulaire" method="post">
     <label for="nom">Nom :</label>
-    <input type="text" id="nom" name="nom" placeholder="Votre Nom"/>
-    <br/><br/>
+    <input type="text" id="nom" name="nom" value="<?php echo $nom;?>"/>
+    <br><br>
     <label for="prenom">Prénom :</label>
-    <input type="text" id="prenom" name="prenom" placeholder="Votre Prénom">
-    <br/><br/>
+    <input type="text" id="prenom" name="prenom" value="<?php echo $prenom;?>"/>
+    <br><br>
     <label for="email">e-mail :</label>
-    <input type="text" id="email" name="email" placeholder="Votre e-mail">
-    <br/><br/>
-    <label for="mdp">Mot de passe : </label>
-    <input type="password" name="mdp" id="mdp">
-    <br/><br/>
-    <label for="mdp2">Confirmation mot de passe :</label>
-    <input type="password" name="mdp2" id="mdp2">
-    <br/><br/>
-    <input type="reset" value="Effacer"/>
-    <input type="submit" value="Clique ici pour valider"/>
-    <input type="hidden" name="frm"/>
+    <input type="text" id="email" name="email"  value="<?php echo $email;?>"/>
+    <br><br>
+    <label for="password">Mot de passe :</label>
+    <input type="password" id="password" name="password"/>
+    <br><br>
+    <label for="passwordverif">Vérification mot de passe :</label>
+    <input type="password" id="passwordverif" name="passwordverif"/>
+    <br><br>
+    <input type="reset" value="Effacer" />
+    <input type="submit" value="Valider !" />
+    <input type="hidden" name="frm" />
 </form>
