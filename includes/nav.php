@@ -10,6 +10,7 @@
                     echo "<li><a href=\"index.php?page=logout\">Logout</a></li>";
                 else
                     echo "<li><a href=\"index.php?page=login\">Login</a></li>";
+                    echo "<li><a href=\"index.php?page=myaccount\">Mon compte</a></li>";
             ?>
             <li><a href="index.php?page=contact">Contact</a></li>
         </ul>
