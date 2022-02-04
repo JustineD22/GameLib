@@ -1,22 +1,49 @@
 <?php
 
-  $serverName = "localhost";
-  $userName = "root";
-  $database = "exercice";
-  $userPassword = "";
+$serverName = "localhost";
+$userName = "root";
+$database = "exercice";
+$userPassword = "";
 
 try{
     $conn = new PDO("mysql:host=$serverName;dbname=$database", $userName, $userPassword);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $requete = $conn->prepare("SELECT * FROM utilisateurs");
+    $requete = $conn->prepare("SELECT * FROM utilisateurs ORDER BY nom ASC");
     $requete->execute();
     $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
 
+    $html = "<table>";
+    $html .= "<tr>";
+    $html .= "<th>ID utilisateur</th>";
+    $html .= "<th>Nom</th>";
+    $html .= "<th>Prenom</th>";
+    $html .= "<th>Mail</th>";
+    $html .= "</tr>";
 
+    for($i = 0 ; $i < count($resultat) ; $i++) {
+        $html .= "<tr>";
+        
+        foreach($resultat[$i] as $key=>$value) {
+            if($key != "mdp") {
+                $html .= "<td>";
+                } 
+                else {
+                    $html .= $value;
+                }
+                $html .= "</td>";
+            }   
+        }
+
+        $html .= "</tr>";
+
+    }
+
+    $html .= "</table>";
+
+    echo $html;
 }
 
 catch(PDOException $e){
     die("Erreur :  " . $e->getMessage());
 }
-

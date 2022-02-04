@@ -1,4 +1,6 @@
 <?php
+session_start();
+$_SESSION['test'] = 'test';
 date_default_timezone_set('Europe/Paris');
 
 spl_autoload_register(function ($classname){
