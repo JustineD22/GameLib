@@ -4,7 +4,7 @@ class Sql
 {
     private string $serverName = "localhost";
     private string $userName = "root";
-    private string $database = "exercice";
+    private string $database = "formulaire";
     private string $userPassword = "";
     private object $connexion;
 

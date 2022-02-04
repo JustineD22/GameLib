@@ -35,7 +35,7 @@ if (isset($_POST['frm'])) {
     if (count($erreur) === 0) {
         $serverName = "localhost";
         $userName = "root";
-        $database = "exercice";
+        $database = "formulaire";
         $userPassword = "";
 
         try{
@@ -59,7 +59,7 @@ if (isset($_POST['frm'])) {
             $update = $conn->prepare("
                 UPDATE utilisateurs
                 SET mail='toto@toto.com', nom='DUMACHIN'
-                WHERE id_utilisateur=6
+                WHERE id_utilisateur=1
             ");
 
             echo $update->rowCount(); // Affiche le nombre de lignes affectées par la requête
