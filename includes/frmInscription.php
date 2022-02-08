@@ -41,6 +41,8 @@
             <br><br>
         </li>
         <li>
-            <input type="reset" value="Effacer" /><input type="submit" value="S'inscrire" name="inscription" />
+            <input type="reset" value="Effacer" />
+            <input type="submit" value="S'inscrire" name="inscription" />
+        </li>
     </ul>
 </form>

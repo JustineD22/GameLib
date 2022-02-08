@@ -1,21 +1,21 @@
 <h1>Login</h1>
 <?php
 if (isset($_POST['envoi'])) {
-    $mail = htmlentities(trim($_POST['mail'])) ?? '';
-    $mdp = htmlentities(trim($_POST['mdp'])) ?? '';
+    $email = htmlentities(trim($_POST['email'])) ?? '';
+    $password = htmlentities(trim($_POST['password'])) ?? '';
 
     $erreur = array();
 
-    if (strlen($mail) === 0)
+    if (strlen($email) === 0)
         array_push($erreur, "Veuillez saisir votre nom");
 
-    if (strlen($mdp) === 0)
+    if (strlen($password) === 0)
         array_push($erreur, "Veuillez saisir un mot de passe");
 
     if (count($erreur) === 0) {
         $serverName = "localhost";
         $userName = "root";
-        $database = "formulaire";
+        $database = "gamelib";
         $userPassword = "";
 
         try{
@@ -25,7 +25,7 @@ if (isset($_POST['envoi'])) {
             //$estcequilestdanslabase = $conn->query("SELECT * FROM utilisateurs WHERE mail='$mail'");
             //$nombreLignes = $estcequilestdanslabase->fetchColumn();
 
-            $requete = $conn->prepare("SELECT * FROM utilisateurs WHERE mail='$mail'");
+            $requete = $conn->prepare("SELECT * FROM users WHERE email='$email'");
             $requete->execute();
             $resultat = $requete->fetchAll(PDO::FETCH_OBJ);
            
@@ -34,12 +34,12 @@ if (isset($_POST['envoi'])) {
             }
 
             else {
-                $mdpRequete = $resultat[0]->mdp;
-                if(password_verify($mdp, $mdpRequete)) {
+                $mdpRequete = $resultat[0]->password;
+                if(password_verify($password, $mdpRequete)) {
                     if(!isset($_SESSION['login']))
                         $_SESSION['login'] = true;
-                        $_SESSION['nom'] = $resultat[0]->nom;
-                        $_SESSION['prenom'] = $resultat[0]->prenom;
+                        $_SESSION['name'] = $resultat[0]->name;
+                        $_SESSION['firstname'] = $resultat[0]->firstname;
                         echo "<script>
                         document.location.replace('http://localhost/GameLib/');
                         </script>";

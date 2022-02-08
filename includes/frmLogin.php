@@ -1,13 +1,13 @@
 <form action="index.php?page=login" method="post">
     <ul>
         <li>
-            <label for="mail">e-mail :</label>
-            <input type="text" id="mail" name="mail" />
+            <label for="email">e-mail :</label>
+            <input type="text" id="email" name="email" />
             <br><br>
         </li>
         <li>
-            <label for="mdp">Mot de passe</label>
-            <input type="password" id="mdp" name="mdp" />
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" />
             <br><br>
         </li>
         <li>

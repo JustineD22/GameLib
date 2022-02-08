@@ -3,9 +3,9 @@
 if(isset($_SESSION['login']) && $_SESSION['login'] === true) {
     $bienvenue = "<p>";
     $bienvenue .= "Bonjour ";
-    $bienvenue .= $_SESSION['prenom'];
+    $bienvenue .= $_SESSION['firstname'];
     $bienvenue .= " ";
-    $bienvenue .= $_SESSION['nom'];
+    $bienvenue .= $_SESSION['name'];
     $bienvenue .= "</p>";
     echo $bienvenue;
 }

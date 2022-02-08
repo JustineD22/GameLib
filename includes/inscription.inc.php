@@ -1,9 +1,9 @@
 <h1>Inscription</h1>
 <?php
 if (isset($_POST['inscription'])) {
-    $name = htmlentities(trim(strtoupper($_POST['name']))) ?? '';
-    $firstname = htmlentities(trim($_POST['firstname'])) ?? '';
-    $email = htmlentities(trim($_POST['email'])) ?? '';
+    $name = mb_strtoupper(trim($_POST['name'])) ?? '';
+    $firstname = ucfirst(mb_strtolower(trim($_POST['firstname']))) ?? '';
+    $email = trim(mb_strtolower($_POST['email'])) ?? '';
     $password = htmlentities(trim($_POST['password'])) ?? '';
     $passwordverif = htmlentities(trim($_POST['passwordverif'])) ?? '';
     $pseudo = htmlentities(trim($_POST['pseudo'])) ?? '';
@@ -11,11 +11,15 @@ if (isset($_POST['inscription'])) {
 
     $erreur = array();
 
-    if (preg_match('/(*UTF8)[[:alpha:]]+$/', $name) !== 1)
+    if (preg_match('/(*UTF8)^[[:alpha:]]+$/', $name) !== 1)
         array_push($erreur, "Veuillez saisir votre nom");
+    else
+        $name = htmlentities($name);
 
-    if (preg_match('/(*UTF8)[[:alpha:]]+$/', $firstname) !== 1)
+    if (preg_match('/(*UTF8)^[[:alpha:]]+$/', $firstname) !== 1)
         array_push($erreur, "Veuillez saisir votre prénom");
+    else
+        $firstname = htmlentities($firstname);
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL))
         array_push($erreur, "Veuillez saisir un e-mail valide");
@@ -33,7 +37,6 @@ if (isset($_POST['inscription'])) {
         array_push($erreur, "Veuillez saisir un pseudo");
 
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
-        dump($_FILES['avatar']);
         $fileName = $_FILES['avatar']['name'];
         $fileType = $_FILES['avatar']['type'];
         $fileTmpName = $_FILES['avatar']['tmp_name'];
@@ -46,24 +49,66 @@ if (isset($_POST['inscription'])) {
             $fileName = $date . $fileName;
             if (move_uploaded_file($fileTmpName, $path . $fileName))
                 echo "Fichier déplacé"; 
+            $fileName = $path . $fileName;
+            $fileName = str_replace("\\", "/", $fileName, );
         }
         else {
             array_push($erreur, "Erreur type MIME");
         }
     } else {
-        array_push($erreur, "Erreur upload " . $_FILES['avatar']['error']);
+        $fileUploadError = $_FILES['avatar']['error'];
+        $fileUploadErrorMessage = '';
+        switch($fileUploadError) {
+            case 1 :
+                $fileUploadErrorMessage = "La taille du fichier téléchargé excède la valeur de upload_max_filesize.";
+            break;
+            case 2 :
+                $fileUploadErrorMessage = "La taille du fichier téléchargé excède la valeur de MAX_FILE_SIZE, qui a été spécifiée dans le formulaire HTML.";
+            break;
+            case 3 :
+                $fileUploadErrorMessage = "Le fichier n'a été que partiellement téléchargé.";
+            break;
+            case 4 :
+                $fileUploadErrorMessage = "Aucun fichier n'a été téléchargé.";
+            break;
+            case 6 :
+                $fileUploadErrorMessage = "Un dossier temporaire est manquant.";
+            break;
+            case 7 :
+                $fileUploadErrorMessage = "Échec de l'écriture du fichier sur le disque.";
+            break;
+            case 8 :
+                $fileUploadErrorMessage = "Une extension PHP a arrêté l'envoi de fichier.";
+            break;
+        }
+
+        array_push($erreur, "Erreur upload : " . $fileUploadErrorMessage);
     }
 
     if (count($erreur) === 0) {
         $serverName = "localhost";
         $userName = "root";
-        $database = "formulaire";
+        $database = "gamelib";
         $userPassword = "";
 
         try {
             $conn = new PDO("mysql:host=$serverName;dbname=$database", $userName, $userPassword);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $password = password_hash($password, PASSWORD_DEFAULT);
+
+            $query = $conn->prepare("
+                INSERT INTO users(name, firstname, email, pseudo, password, bio, avatar)
+                VALUES (:name, :firstname, :email, :pseudo, :password, :bio, :avatar)
+            ");
+
+            $query->bindParam(':name', $name);
+            $query->bindParam(':firstname', $firstname);
+            $query->bindParam(':email', $email);
+            $query->bindParam(':pseudo', $pseudo);
+            $query->bindParam(':password', $password);
+            $query->bindParam(':bio', $bio);
+            $query->bindParam(':avatar', $fileName);
+            $query->execute();
 
             echo "<p>Insertions effectuées</p>";
         } catch (PDOException $e) {
@@ -86,6 +131,5 @@ if (isset($_POST['inscription'])) {
 } else {
     echo "<h2>Merci de renseigner le formulaire&nbsp;:</h2>";
     $name = $firstname = $email = $pseudo = $bio = '';
+    include 'frmInscription.php';
 }
-
-include 'frmInscription.php';
